@@ -8,9 +8,10 @@ import org.apache.solr.common.util.NamedList;
  * A base class for classes representing a configuration of a certain custom
  * Solr plug-in, providing functionality for initializing the configuration
  * class' fields. It should usually be derived from and used together with
- * fields having the ConfigField annotation. However, in case the configuration
- * contains only few fields it can be instantiated and used directly through the
- * various get...Field methods.
+ * fields having the {@link deansg.solr.solr_plugin_utilities.ConfigField}
+ * annotation. However, in case the configuration contains only few fields it
+ * can be instantiated and used directly through the various get...Field
+ * methods.
  */
 @SuppressWarnings("rawtypes")
 public class SolrPluginConfigurationBase {
@@ -65,7 +66,8 @@ public class SolrPluginConfigurationBase {
      *            Whether the parameter must be specified in the configuration
      * @return The value of the Integer parameter
      */
-    public Integer getIntParameter(String parameterName, boolean isRequired) {
+    public Integer getIntParameter(String parameterName, boolean isRequired)
+	    throws SolrConfigurationInitializationException {
 	return getParameter(parameterName, isRequired, Integer.class.getName());
     }
 
@@ -82,7 +84,8 @@ public class SolrPluginConfigurationBase {
      *            Whether the parameter must be specified in the configuration
      * @return The value of the Long parameter
      */
-    public Long getLongParameter(String parameterName, boolean isRequired) {
+    public Long getLongParameter(String parameterName, boolean isRequired)
+	    throws SolrConfigurationInitializationException {
 	return getParameter(parameterName, isRequired, Long.class.getName());
     }
 
@@ -99,7 +102,8 @@ public class SolrPluginConfigurationBase {
      *            Whether the parameter must be specified in the configuration
      * @return The value of the Float parameter
      */
-    public Float getFloatParameter(String parameterName, boolean isRequired) {
+    public Float getFloatParameter(String parameterName, boolean isRequired)
+	    throws SolrConfigurationInitializationException {
 	return getParameter(parameterName, isRequired, Float.class.getName());
     }
 
@@ -116,7 +120,8 @@ public class SolrPluginConfigurationBase {
      *            Whether the parameter must be specified in the configuration
      * @return The value of the Double parameter
      */
-    public Double getDoubleParameter(String parameterName, boolean isRequired) {
+    public Double getDoubleParameter(String parameterName, boolean isRequired)
+	    throws SolrConfigurationInitializationException {
 	return getParameter(parameterName, isRequired, Double.class.getName());
     }
 
@@ -133,7 +138,8 @@ public class SolrPluginConfigurationBase {
      *            Whether the parameter must be specified in the configuration
      * @return The value of the String parameter
      */
-    public String getStringParameter(String parameterName, boolean isRequired) {
+    public String getStringParameter(String parameterName, boolean isRequired)
+	    throws SolrConfigurationInitializationException {
 	return getParameter(parameterName, isRequired, String.class.getName());
     }
 
@@ -150,7 +156,8 @@ public class SolrPluginConfigurationBase {
      *            Whether the parameter must be specified in the configuration
      * @return The value of the Boolean parameter
      */
-    public Boolean getBooleanParameter(String parameterName, boolean isRequired) {
+    public Boolean getBooleanParameter(String parameterName, boolean isRequired)
+	    throws SolrConfigurationInitializationException {
 	return getParameter(parameterName, isRequired, Boolean.class.getName());
     }
 
@@ -163,12 +170,13 @@ public class SolrPluginConfigurationBase {
      * @return Doesn't return a value - guaranteed to throw an exception. The return
      *         type is used to simplify code calling this method
      */
-    protected <T> T throwInitializationException(String message) {
+    protected <T> T throwInitializationException(String message) throws SolrConfigurationInitializationException {
 	throw new SolrConfigurationInitializationException(message);
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T getParameter(String parameterName, boolean isRequired, String className) {
+    private <T> T getParameter(String parameterName, boolean isRequired, String className)
+	    throws SolrConfigurationInitializationException {
 	Object rawValue = args.get(parameterName);
 	if (rawValue == null) {
 	    if (isRequired) {
@@ -183,7 +191,7 @@ public class SolrPluginConfigurationBase {
 	}
     }
 
-    private Object getValueForField(ConfigField configFieldAnnotation) {
+    private Object getValueForField(ConfigField configFieldAnnotation) throws SolrConfigurationInitializationException {
 	String fieldName = configFieldAnnotation.fieldName();
 	boolean isRequired = configFieldAnnotation.isRequired();
 	switch (configFieldAnnotation.fieldType()) {
@@ -211,7 +219,8 @@ public class SolrPluginConfigurationBase {
 	}
     }
 
-    private void setValueForField(Field field, ConfigField configFieldAnnotation, Object value) {
+    private void setValueForField(Field field, ConfigField configFieldAnnotation, Object value)
+	    throws SolrConfigurationInitializationException {
 	try {
 	    if (value != null) {
 		field.set(this, value);

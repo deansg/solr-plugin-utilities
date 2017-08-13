@@ -10,15 +10,15 @@ import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.response.SolrQueryResponse;
 
 /**
- * A SearchHandler that takes advantage of ExtendedSearchCompoenents' additional
- * methods to enable more features *
+ * A SearchHandler that takes advantage of SearchComponents deriving from
+ * {@link deansg.solr.solr_plugin_utilities.ExtendedSearchComponent}
  */
 public class ExtendedSearchHandler extends SearchHandler {
     protected List<ExtendedSearchComponent> extendedComponents;
 
     /**
-     * Calls SearchHandler's inform method and in addition initializes the list of
-     * extended search components
+     * Calls {@link org.apache.solr.handler.component.SearchHandler}'s inform method
+     * and in addition initializes the list of extended search components
      */
     @Override
     public void inform(SolrCore core) {
@@ -29,7 +29,8 @@ public class ExtendedSearchHandler extends SearchHandler {
     }
 
     /**
-     * Calls SearchHandler's handleRequestBody inside a try-catch block, and allows
+     * Calls {@link org.apache.solr.handler.component.SearchHandler}'s
+     * handleRequestBody method inside a try-catch block, and allows
      * ExtendedSearchComponents to react to a thrown exception before passing it
      * further
      */

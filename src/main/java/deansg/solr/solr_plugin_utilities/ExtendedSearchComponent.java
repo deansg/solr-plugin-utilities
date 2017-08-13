@@ -4,7 +4,7 @@ import org.apache.solr.handler.component.ResponseBuilder;
 import org.apache.solr.handler.component.SearchComponent;
 
 /**
- * A SearchComponent with more abstract methods that enable more features if
+ * A Solr search compoenent with more abstract methods that enable more features if
  * invoked appropriately
  */
 public abstract class ExtendedSearchComponent extends SearchComponent {
