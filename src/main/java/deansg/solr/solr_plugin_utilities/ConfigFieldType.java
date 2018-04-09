@@ -5,5 +5,5 @@ package deansg.solr.solr_plugin_utilities;
  * configuration
  */
 public enum ConfigFieldType {
-    STRING, BOOLEAN, INT, LONG, FLOAT, DOUBLE
+    STRING, BOOLEAN, INT, LONG, FLOAT, DOUBLE, ARRAY, NAMED_LIST, NAMED_LIST_AS_CONFIG
 }

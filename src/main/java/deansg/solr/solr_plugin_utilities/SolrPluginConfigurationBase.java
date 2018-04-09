@@ -1,6 +1,7 @@
 package deansg.solr.solr_plugin_utilities;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import org.apache.solr.common.util.NamedList;
 
@@ -68,7 +69,7 @@ public class SolrPluginConfigurationBase {
      */
     public Integer getIntParameter(String parameterName, boolean isRequired)
 	    throws SolrConfigurationInitializationException {
-	return getParameter(parameterName, isRequired, Integer.class.getName());
+	return getParameter(parameterName, isRequired, Integer.class);
     }
 
     /**
@@ -86,7 +87,7 @@ public class SolrPluginConfigurationBase {
      */
     public Long getLongParameter(String parameterName, boolean isRequired)
 	    throws SolrConfigurationInitializationException {
-	return getParameter(parameterName, isRequired, Long.class.getName());
+	return getParameter(parameterName, isRequired, Long.class);
     }
 
     /**
@@ -104,7 +105,7 @@ public class SolrPluginConfigurationBase {
      */
     public Float getFloatParameter(String parameterName, boolean isRequired)
 	    throws SolrConfigurationInitializationException {
-	return getParameter(parameterName, isRequired, Float.class.getName());
+	return getParameter(parameterName, isRequired, Float.class);
     }
 
     /**
@@ -122,7 +123,7 @@ public class SolrPluginConfigurationBase {
      */
     public Double getDoubleParameter(String parameterName, boolean isRequired)
 	    throws SolrConfigurationInitializationException {
-	return getParameter(parameterName, isRequired, Double.class.getName());
+	return getParameter(parameterName, isRequired, Double.class);
     }
 
     /**
@@ -140,7 +141,7 @@ public class SolrPluginConfigurationBase {
      */
     public String getStringParameter(String parameterName, boolean isRequired)
 	    throws SolrConfigurationInitializationException {
-	return getParameter(parameterName, isRequired, String.class.getName());
+	return getParameter(parameterName, isRequired, String.class);
     }
 
     /**
@@ -158,7 +159,63 @@ public class SolrPluginConfigurationBase {
      */
     public Boolean getBooleanParameter(String parameterName, boolean isRequired)
 	    throws SolrConfigurationInitializationException {
-	return getParameter(parameterName, isRequired, Boolean.class.getName());
+	return getParameter(parameterName, isRequired, Boolean.class);
+    }
+
+    /**
+     * Gets an array parameter from the NamedList. If the parameter isn't required
+     * and isn't in the NamedList, returns null. Throws a
+     * {@link deansg.solr.solr_plugin_utilities.SolrConfigurationInitializationException}
+     * if the parameter is required but missing, or if the parameter is provided but
+     * isn't an array
+     * 
+     * @param parameterName
+     *            The name of the parameter in the configuration
+     * @param isRequired
+     *            Whether the parameter must be specified in the configuration
+     * @return The value of the Boolean parameter
+     */
+    public List<?> getArrParameter(String parameterName, boolean isRequired)
+	    throws SolrConfigurationInitializationException {
+	return getParameter(parameterName, isRequired, "regular array");
+    }
+
+    /**
+     * Gets a NamedList parameter from the NamedList. If the parameter isn't
+     * required and isn't in the NamedList, returns null. Throws a
+     * {@link deansg.solr.solr_plugin_utilities.SolrConfigurationInitializationException}
+     * if the parameter is required but missing, or if the parameter is provided but
+     * isn't a NamedList
+     * 
+     * @param parameterName
+     *            The name of the parameter in the configuration
+     * @param isRequired
+     *            Whether the parameter must be specified in the configuration
+     * @return The value of the Boolean parameter
+     */
+    public NamedList<?> getNamedListParameter(String parameterName, boolean isRequired)
+	    throws SolrConfigurationInitializationException {
+	return getParameter(parameterName, isRequired, "named list");
+    }
+
+    /**
+     * Gets a NamedList parameter from the NamedList as a separate
+     * {@link deansg.solr.solr_plugin_utilities.SolrPluginConfigurationBase} object.
+     * If the parameter isn't required and isn't in the NamedList, returns null.
+     * Throws a
+     * {@link deansg.solr.solr_plugin_utilities.SolrConfigurationInitializationException}
+     * if the parameter is required but missing, or if the parameter is provided but
+     * isn't a NamedList
+     * 
+     * @param parameterName
+     *            The name of the parameter in the configuration
+     * @param isRequired
+     *            Whether the parameter must be specified in the configuration
+     * @return The value of the Boolean parameter
+     */
+    public SolrPluginConfigurationBase getNamedListAsConfig(String parameterName, boolean isRequired)
+	    throws SolrConfigurationInitializationException {
+	return new SolrPluginConfigurationBase(getNamedListParameter(parameterName, isRequired));
     }
 
     /**
@@ -191,6 +248,10 @@ public class SolrPluginConfigurationBase {
 	}
     }
 
+    private <T> T getParameter(String parameterName, boolean isRequired, Class<T> classObj) {
+	return getParameter(parameterName, isRequired, classObj.getName());
+    }
+
     private Object getValueForField(ConfigField configFieldAnnotation) throws SolrConfigurationInitializationException {
 	String fieldName = configFieldAnnotation.fieldName();
 	boolean isRequired = configFieldAnnotation.isRequired();
@@ -212,6 +273,15 @@ public class SolrPluginConfigurationBase {
 	}
 	case DOUBLE: {
 	    return getDoubleParameter(fieldName, isRequired);
+	}
+	case ARRAY: {
+	    return getArrParameter(fieldName, isRequired);
+	}
+	case NAMED_LIST: {
+	    return getNamedListParameter(fieldName, isRequired);
+	}
+	case NAMED_LIST_AS_CONFIG: {
+	    return getNamedListAsConfig(fieldName, isRequired);
 	}
 	default: {
 	    return throwInitializationException("Unsupported field type: " + configFieldAnnotation.fieldType());
